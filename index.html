@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zohran Offline Store</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      font-family: Lobster, Lobster;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    .header {
+      background-color: #00f7ff;
+      padding: 20px;
+      text-align: center;
+      color: white;
+    }
+    .menu {
+      display: flex;
+      justify-content: center;
+      background-color: #00bfff;
+      padding: 15px;
+    }
+    .menu button {
+      background-color: #005f7f;
+      color: white;
+      padding: 12px 25px;
+      margin: 0 15px;
+      border: none;
+      cursor: pointer;
+    }
+    .menu button:hover {
+      background-color: #003f5f;
+    }
+    .content {
+      padding: 20px;
+    }
+    .product-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .product-item {
+      background-color: white;
+      border: 1px solid #ddd;
+      padding: 15px;
+      width: 220px;
+      text-align: center;
+      border-radius: 8px;
+    }
+    .product-item img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+    .footer {
+      background-color: #00bfff;
+      color: black;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Welcome To Zohran Offline Store</h1>
+  </div>
+
+  <div class="menu">
+    <button onclick="showCategory('drinks')">Drinks</button>
+    <button onclick="showCategory('bakery')">Bakery</button>
+    <button onclick="showCategory('biscuits')">Biscuits</button>
+    <button onclick="showCategory('meat')">Meat</button>
+    <button onclick="showCategory('chicken')">Chicken</button>
+    <button onclick="showCategory('fruits')">Fruits</button>
+    <button onclick="showCategory('vegetables')">Vegetables</button>
+    <button onclick="showCategory('dairy')">Dairy</button>
+    <button onclick="showCategory('snacks')">Snacks</button>
+    <button onclick="showCategory('household')">Household</button>
+    <button onclick="showCategory('stationary')">Stationary</button>
+    <button onclick="showCart()">Cart</button>
+  </div>
+
+  <div class="content">
+    <div id="product-list" class="product-list"></div>
+    <div id="orders-list" class="orders-list"></div>
+  </div>
+
+  <div class="footer">
+    <p>&copy; 2025 Zohran Offline Store. All Rights Reserved.</p>
+  </div>
+
+  <script>
+    const products = {
+      drinks: [
+        { name: 'Coca Cola (2.25) Le', price: '260', image: 'https://via.placeholder.com/200x150?text=Coca+Cola+(2.25)+Le' },
+        { name: 'Pepsi (2.25) Le', price: '260', image: 'https://via.placeholder.com/200x150?text=Pepsi+(2.25)+Le' },
+        { name: 'Sprite (2.25) Le', price: '260', image: 'https://via.placeholder.com/200x150?text=Sprite+(2.25)+Le' },
+        { name: 'Mountain Dew (2.25) Le', price: '270', image: 'https://via.placeholder.com/200x150?text=Mountain+Dew+(2.25)+Le' }
+      ],
+      bakery: [
+        { name: 'Small Cake', price: '120', image: 'https://via.placeholder.com/200x150?text=Small+Cake' },
+        { name: 'Big Cake', price: '240', image: 'https://via.placeholder.com/200x150?text=Big+Cake' }
+      ],
+      biscuits: [
+        { name: 'Prince Biscuit', price: '50', image: 'https://via.placeholder.com/200x150?text=Prince+Biscuit' },
+        { name: 'Digestive Biscuit', price: '50', image: 'https://via.placeholder.com/200x150?text=Digestive+Biscuit' },
+        { name: 'Marie Biscuit', price: '50', image: 'https://via.placeholder.com/200x150?text=Prince+Biscuit' },
+        { name: 'Oreo Biscuits', price: '50', image: 'https://via.placeholder.com/200x150?text=Oreo+Biscuits' },
+        { name: 'Super Simple Biscuit', price: '50', image: 'https://via.placeholder.com/200x150?text=Super+Simple+Biscuit' },
+        { name: 'Super Chocolate Biscuit', price: '50', image: 'https://via.placeholder.com/200x150?text=Super+Chocolate+Biscuit' },
+        { name: 'Tiger Biscuit', price: '30', image: 'https://via.placeholder.com/200x150?text=Tiger+Biscuit' },
+        { name: 'Candy Biscuit', price: '100', image: 'https://via.placeholder.com/200x150?text=Candy+Biscuits' },
+      ],
+      meat: [
+        { name: 'Mutton (1)Kg', price: '1400', image: 'https://via.placeholder.com/200x150?text=Mutton+(1)Kg' },
+        { name: 'Beef (1)Kg', price: '1350', image: 'https://via.placeholder.com/200x150?text=Beef+(1)Kg' }
+      ],
+      chicken: [
+        { name: 'Chicken Full', price: '950', image: 'https://via.placeholder.com/200x150?text=Chicken+Full' },
+        { name: 'Chicken Half', price: '480', image: 'https://via.placeholder.com/200x150?text=Chicken+Half' }
+      ],
+      fruits: [
+        { name: 'Mango (1)Kg', price: '350', image: 'https://via.placeholder.com/200x150?text=Mango+(1)Kg' },
+        { name: 'Apple (1)Kg', price: '350', image: 'https://via.placeholder.com/200x150?text=Apple+(1)Kg' },
+        { name: 'Orange (1)Kg', price: '200', image: 'https://via.placeholder.com/200x150?text=Orange+(1)Kg' },
+        { name: 'Gaua (1)Kg', price: '350', image: 'https://via.placeholder.com/200x150?text=Gaua+(1)Kg' },
+        { name: 'Pomegrinate (1)Kg', price: '460', image: 'https://via.placeholder.com/200x150?text=Pomegrinate+(1)Kg' }
+      ],
+      vegetables: [
+        { name: 'Cauliflower (1)Kg', price: '150', image: 'https://via.placeholder.com/200x150?text=Cauliflower+(1)Kg' },
+        { name: 'Cucumber (1)Kg', price: '150', image: 'https://via.placeholder.com/200x150?text=Cucumber+(1)Kg' },
+        { name: 'Cabbage (1)Kg', price: '200', image: 'https://via.placeholder.com/200x150?text=Cabbage+(1)Kg' },
+        { name: 'Carrots (1)Kg', price: '200', image: 'https://via.placeholder.com/200x150?text=Apple+(1)Kg' }
+      ],
+      dairy: [
+        { name: 'Milk (1)Kg', price: '300', image: 'https://via.placeholder.com/200x150?text=Milk+(1)Kg' },
+        { name: 'Egg (1)Dozen', price: '350', image: 'https://via.placeholder.com/200x150?text=Egg+(1)Dozen' }
+      ],
+      snacks: [
+        { name: 'Masala Lays', price: '100', image: 'https://via.placeholder.com/200x150?text=Masala+Lays' },
+        { name: 'Herb And Yougurt Lays', price: '100' , image: 'https://via.placeholder.com/200x150?text=Herb+And+Yougurt+Lays'},
+        { name: 'French Cheeze Lays', price: '100' , image: 'https://via.placeholder.com/200x150?text=French+Cheeze+Lays' },
+        { name: 'Classic Lays', price: '100' , image: 'https://via.placeholder.com/200x150?text=Classic+Lays' }
+      ],
+      household: [
+        { name: 'Toothbrush', price: '200', image: 'https://via.placeholder.com/200x150?text=Toothbrush' },
+        { name: ' Pantene Shampoo', price: '550', image: 'https://via.placeholder.com/200x150?text=Pantene+Shampoo' },
+        { name: 'Colgate Cavity Protection Toothpaste', price: '100', image: 'https://via.placeholder.com/200x150?text=Colgate+Cavity+Protection+Toothpaste' },
+        { name: 'Colgate Miswak Toothpaste', price: '100', image: 'https://via.placeholder.com/200x150?text=Colgate+Miswak+Toothpaste' },
+        { name: 'Dentonic Toothpaste', price: '200', image: 'https://via.placeholder.com/200x150?text=Dentonic+Toothpaste' },
+        { name: 'Lifeboy Shampoo', price: '550', image: 'https://via.placeholder.com/200x150?text=Lifeboy+Shampoo' },
+        { name: 'Headand Shoulder Shampoo', price: '100', image: 'https://via.placeholder.com/200x150?text=Headand+Shoulder+Shampoo' },
+        { name: 'Lux Soap', price: '100', image: 'https://via.placeholder.com/200x150?text=Lux+Soap' },
+        { name: 'Sunsilk Shampoo', price: '200', image: 'https://via.placeholder.com/200x150?text=Sunsilk+Shampoo' },
+        { name: 'Lifeboy Soap', price: '550', image: 'https://via.placeholder.com/200x150?text=Lifeboy+Soap' }
+      ],
+     stationary: [
+        { name: 'Rough Copy', price: '60', image: 'https://via.placeholder.com/200x150?text=Rough+Copy' },
+        { name: ' Neat Rigister', price: '350', image: 'https://via.placeholder.com/200x150?text=Neat+Register' },
+        { name: 'Rough Rigister', price: '250', image: 'https://via.placeholder.com/200x150?text=Rough+Register' },
+        { name: 'Dollar Blue Ball Point', price: '60', image: 'https://via.placeholder.com/200x150?text=Dollar+Blue+Ball+Point' },
+        { name: 'Dollar Black Ball Point', price: '60', image: 'https://via.placeholder.com/200x150?text=Dollar+Black+Ball+Point' },
+        { name: 'Dollar Black Cut Marker ', price: '30', image: 'https://via.placeholder.com/200x150?text=Dollar+Black+Cut+Marker' },
+        { name: 'Dollar Blue Cut Marker', price: '30', image: 'https://via.placeholder.com/200x150?text=Dollar+Blue+Cut+Marker' },
+        { name: 'Dollar Black Single Marker', price: '30', image: 'https://via.placeholder.com/200x150?text=Dollar+Black+Single+Marker' },
+        { name: 'Dollar Blue Single Marker', price: '30', image: 'https://via.placeholder.com/200x150?text=Dollar+Blue+Single+Marker' },
+        { name: 'Dollar Pencil Pack', price: '140', image: 'https://via.placeholder.com/200x150?text=Dollar+Pencil+Pack' }
+      ]
+    };
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+    function showCategory(category) {
+      const productList = document.getElementById('product-list');
+      productList.innerHTML = '';
+      products[category].forEach(product => {
+        const productDiv = document.createElement('div');
+        productDiv.className = 'product-item';
+        productDiv.innerHTML = `
+          <img src="${product.image}" alt="${product.name}">
+          <h3>${product.name}</h3>
+          <p>Price: RS ${product.price}</p>
+          <button onclick="addToCart('${product.name}', '${product.price}')">Add to Cart</button>
+        `;
+        productList.appendChild(productDiv);
+      });
+    }
+
+    function addToCart(name, price) {
+      cart.push({ name, price });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert(`${name} added to cart!`);
+    }
+
+    function showCart() {
+      const productList = document.getElementById('product-list');
+      productList.innerHTML = '';
+      if (cart.length === 0) {
+        productList.innerHTML = '<p>Your cart is empty.</p>';
+        return;
+      }
+      let total = 0;
+      cart.forEach((item, index) => {
+        total += parseFloat(item.price);
+        productList.innerHTML += `
+          <p>${item.name} - RS ${item.price}</p>`;
+      });
+      productList.innerHTML += `<h3>Total: RS ${total.toFixed(2)}</h3>`;
+      productList.innerHTML += `
+        <h3>Contact Information</h3>
+        <form onsubmit="submitOrder(event)">
+          <div class="form-group">
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" required>
+          </div>
+          <div class="form-group">
+            <label for="address">Your Address:</label>
+            <input type="text" id="address" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Your Phone:</label>
+            <input type="text" id="phone" required>
+          </div>
+          <button type="submit">Submit Order</button>
+        </form>
+      `;
+    }
+
+    function submitOrder(event) {
+      event.preventDefault();
+      const name = document.getElementById('name').value;
+      const address = document.getElementById('address').value;
+      const phone = document.getElementById('phone').value;
+
+      const orderDetails = {
+        name,
+        address,
+        phone,
+        order: cart
+      };
+
+      orders.push(orderDetails);
+      localStorage.setItem('orders', JSON.stringify(orders));
+      alert('Order submitted successfully! The delivery man will take charges upon delivery.');
+
+      cart = [];
+      localStorage.setItem('cart', JSON.stringify(cart));
+      showOrders();
+    }
+
+    function showOrders() {
+      const ordersList = document.getElementById('orders-list');
+      ordersList.innerHTML = '';
+      if (orders.length === 0) {
+        ordersList.innerHTML = '<p>No orders yet.</p>';
+        return;
+      }
+      orders.forEach(order => {
+        ordersList.innerHTML += `
+          <div>
+            <h3>Order from: ${order.name}</h3>
+            <p>Address: ${order.address}</p>
+            <p>Phone: ${order.phone}</p>
+            <h4>Ordered Items:</h4>
+            <ul>
+              ${order.order.map(item => `<li>${item.name} - RS ${item.price}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      });
+    }
+  </script>
+
+</body>
+</html>
